@@ -12,6 +12,23 @@ export class App extends Component {
         contacts: [],
         filter: '',
         }
+        
+        // Після першого рендеру в фунції componentDidMount віправляється запрос в LocalStorage і якщо там щось є перезаписується setState і знову відбувається рендерінг
+        componentDidMount() {
+            const contacts = JSON.parse(localStorage.getItem("contacts"));
+            if(contacts?.length) {
+                this.setState({
+                    contacts,
+                })
+            }
+        }
+        // Після наступних рендерінгів перевіряється чи змінився стан contact і якщо змінився то записуємо зміни в LocalStorage
+        componentDidUpdate(prevProps, prevState) {
+            const {contacts} = this.state;
+            if(prevState.contacts !== contacts) {
+                localStorage.setItem("contacts", JSON.stringify(contacts));
+            }
+        }
 
 // Записуємо нову дату в contacts (зберігаємо минулий стан)
 formSubmitHandler = data => {
